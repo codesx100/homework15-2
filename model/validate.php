@@ -17,7 +17,7 @@ class Validate {
         // Get Field object
         $field = $this->fields->getField($name);
 
-        // If field is not required and empty, remove error and exit
+        // If field is not required and empty, remove errors and exit
         if (!$required && empty($value)) {
             $field->clearErrorMessage();
             return;
@@ -30,6 +30,25 @@ class Validate {
             $field->setErrorMessage('Too short.');
         } else if (strlen($value) > $max) {
             $field->setErrorMessage('Too long.');
+        } else {
+            $field->clearErrorMessage();
+        }
+    }
+
+    // Validate a generic number field
+    public function number($name, $value,
+            $required = true) {
+
+        // Get Field object
+        $field = $this->fields->getField($name);
+
+        // Call the text method and exit if it yields an error
+        $this->text($name, $value, $required);
+        if ($field->hasError()) { return; }
+
+        // Check field and set or clear error message
+        if (!is_numeric($value)) {
+            $field->setErrorMessage('Must be a valid number.');
         } else {
             $field->clearErrorMessage();
         }
